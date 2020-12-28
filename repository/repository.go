@@ -8,10 +8,30 @@ import (
 )
 
 type repository struct {
-	db *gocql.Session
+	session *gocql.Session
 }
 
 func (r *repository) Create(entry *domainmodel.Model) error {
+	q := `
+	INSERT INTO em.messages (
+		id,
+		timestamp,
+		email,
+		title,
+		content,
+		magic_number
+	)
+	VALUES (uuid(), dateof(now()), ?, ?, ?, ?)
+	`
+	err := r.session.Query(q,
+		entry.Email,
+		entry.Title,
+		entry.Content,
+		entry.MagicNumber).Exec()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -27,6 +47,6 @@ func (r *repository) GetByMagicNumber(magicNumber *string) ([]*domainmodel.Model
 func NewEntryRepository(dbConn *gocql.Session) domain.MessagesRepository {
 
 	return &repository{
-		db: dbConn,
+		session: dbConn,
 	}
 }
