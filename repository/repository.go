@@ -21,7 +21,7 @@ func (r *repository) Create(entry *domainmodel.Model) error {
 		content,
 		magic_number
 	)
-	VALUES (uuid(), dateof(now()), ?, ?, ?, ?)
+	VALUES (uuid(), toTimestamp(now()), ?, ?, ?, ?) USING TTL 300
 	`
 	err := r.session.Query(q,
 		entry.Email,
