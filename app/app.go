@@ -6,8 +6,8 @@ type App struct {
 	MessagesService domain.MessagesService
 }
 
-func NewApp(es domain.MessagesService) *App {
+func NewApp(ms domain.MessagesService) *App {
 	return &App{
-		MessagesService: es,
+		MessagesService: ms,
 	}
 }

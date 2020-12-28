@@ -22,7 +22,7 @@ func (ms *messagesService) GetMessages(email *string) ([]*domainmodel.Model, err
 	return nil, nil
 }
 
-func NewMessagesService(mr domain.MessagesRepository) domain.MessagesRepository {
+func NewMessagesService(mr domain.MessagesRepository) domain.MessagesService {
 	ms := &messagesService{
 		messagesRepo: mr,
 	}
