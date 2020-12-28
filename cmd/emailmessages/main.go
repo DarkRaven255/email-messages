@@ -16,10 +16,11 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
+
+	"github.com/gocql/gocql"
 )
 
-var postgresDB *gorm.DB
+var cassandraDB *gocql.Session
 
 func main() {
 
@@ -43,10 +44,10 @@ func main() {
 		}
 	}()
 
-	er := repository.NewEntryRepository(postgresDB)
+	mr := repository.NewEntryRepository(cassandraDB)
 
-	es := service.NewMessagesService(er)
-	a := app.NewApp(es)
+	ms := service.NewMessagesService(mr)
+	a := app.NewApp(ms)
 
 	http.NewHandler(e, a)
 
@@ -58,4 +59,16 @@ func init() {
 	if err != nil {
 		log.Fatalf("error loading config: %v\n", err)
 	}
+
+	cassandraDB = initCassandra()
+}
+
+func initCassandra() *gocql.Session {
+	cluster := gocql.NewCluster("127.0.0.1")
+	cluster.Authenticator = gocql.PasswordAuthenticator{Username: config.Cfg.DbUsername, Password: config.Cfg.DbPassword}
+	session, err := cluster.CreateSession()
+	if err != nil {
+		panic(err)
+	}
+	return session
 }

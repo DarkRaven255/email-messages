@@ -1,22 +1,20 @@
 package config
 
+import "github.com/spf13/viper"
+
 type Config struct {
-	DbAccess string
-	Port     string
+	Port       string
+	DbUsername string
+	DbPassword string
 }
 
 var Cfg Config
 
 func LoadConfig() error {
-	// v.AutomaticEnv()
-	// Cfg.Port = v.GetString("PORT")
-
-	// if v.GetString("ENV") == "dev" {
-	// 	Cfg.DbAccess = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-	// 		v.GetString("HOST"), v.GetString("DBPORT"), v.GetString("USER"), v.GetString("PASSWORD"), v.GetString("DBNAME"))
-	// } else {
-	// 	Cfg.DbAccess = v.GetString("DATABASE_URL")
-	// }
+	viper.AutomaticEnv()
+	Cfg.Port = viper.GetString("PORT")
+	Cfg.DbUsername = viper.GetString("DBUSERNAME")
+	Cfg.DbPassword = viper.GetString("DBPASSWORD")
 
 	return nil
 }

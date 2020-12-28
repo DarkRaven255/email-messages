@@ -6,7 +6,6 @@ import (
 	"email-messages/domain"
 	"net/http"
 
-	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 )
@@ -96,12 +95,8 @@ func getStatusCode(err error) int {
 	log.Error(err)
 
 	switch err {
-	case domain.ErrInternalServerError:
-		return http.StatusInternalServerError
-	case domain.ErrNotFound, gorm.ErrRecordNotFound:
+	case domain.ErrNotFound:
 		return http.StatusNotFound
-	case domain.ErrConflict:
-		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError
 	}
