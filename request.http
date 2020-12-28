@@ -1,1 +1,46 @@
 @host = http://localhost:8080
+@emailValue = jan.kowalski@example.com
+
+###
+POST {{host}}/api/message
+Content-Type: application/json
+
+{
+    "email":"jan.kowalski@example.com",
+    "title":"Interview",
+    "content":"simple text",
+    "magic_number":101
+}
+
+###
+POST {{host}}/api/message
+Content-Type: application/json
+
+{
+    "email":"jan.kowalski@example.com",
+    "title":"Interview 2",
+    "content":"simple text 2",
+    "magic_number":22
+}
+
+###
+POST {{host}}/api/message
+Content-Type: application/json
+
+{   
+    "email":"anna.zajkowska@example.com",
+    "title":"Interview 3",
+    "content":"simple text 3",
+    "magic_number":101
+}
+
+###
+POST {{host}}/api/send
+Content-Type: application/json
+
+{
+    "magic_number":101
+}
+
+###
+GET {{host}}/api/messages/{{emailValue}}
