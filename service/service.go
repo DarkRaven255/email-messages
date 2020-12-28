@@ -11,6 +11,17 @@ type messagesService struct {
 }
 
 func (ms *messagesService) AddMessage(cmd *commands.AddMessageCmd) error {
+
+	message, err := domainmodel.NewDomainModel(cmd)
+	if err != nil {
+		return err
+	}
+
+	err = ms.messagesRepo.Create(message)
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }
 

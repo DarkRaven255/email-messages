@@ -93,7 +93,6 @@ func getStatusCode(err error) int {
 	}
 
 	log.Error(err)
-
 	switch err {
 	case domain.ErrNotFound:
 		return http.StatusNotFound

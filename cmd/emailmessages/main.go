@@ -20,7 +20,7 @@ import (
 	"github.com/gocql/gocql"
 )
 
-var cassandraDB *gocql.Session
+var cassandraSession *gocql.Session
 
 func main() {
 
@@ -44,7 +44,7 @@ func main() {
 		}
 	}()
 
-	mr := repository.NewEntryRepository(cassandraDB)
+	mr := repository.NewEntryRepository(cassandraSession)
 
 	ms := service.NewMessagesService(mr)
 	a := app.NewApp(ms)
@@ -52,6 +52,8 @@ func main() {
 	http.NewHandler(e, a)
 
 	log.Fatal(e.Start(":" + config.Cfg.Port))
+
+	defer cassandraSession.Close()
 }
 
 func init() {
@@ -60,15 +62,17 @@ func init() {
 		log.Fatalf("error loading config: %v\n", err)
 	}
 
-	cassandraDB = initCassandra()
+	cassandraSession = initCassandra()
 }
 
 func initCassandra() *gocql.Session {
 	cluster := gocql.NewCluster("127.0.0.1")
 	cluster.Authenticator = gocql.PasswordAuthenticator{Username: config.Cfg.DbUsername, Password: config.Cfg.DbPassword}
+	cluster.Keyspace = config.Cfg.DbKeyspace
 	session, err := cluster.CreateSession()
 	if err != nil {
 		panic(err)
 	}
+
 	return session
 }
