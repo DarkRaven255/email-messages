@@ -66,7 +66,7 @@ func init() {
 }
 
 func initCassandra() *gocql.Session {
-	cluster := gocql.NewCluster("127.0.0.1")
+	cluster := gocql.NewCluster(config.Cfg.DbCluster1)
 	cluster.Authenticator = gocql.PasswordAuthenticator{Username: config.Cfg.DbUsername, Password: config.Cfg.DbPassword}
 	cluster.Keyspace = config.Cfg.DbKeyspace
 	session, err := cluster.CreateSession()
