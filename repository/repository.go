@@ -36,7 +36,15 @@ func (r *repository) Create(entry *domainmodel.Model) error {
 	return nil
 }
 
-func (r *repository) Delete() error {
+func (r *repository) Delete(id *gocql.UUID) error {
+	var (
+		q = `DELETE FROM em.messages WHERE id = ?`
+	)
+
+	err := r.session.Query(q, id).Exec()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
