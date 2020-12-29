@@ -23,6 +23,7 @@ func (r *repository) Create(entry *domainmodel.Model) error {
 	)
 	VALUES (uuid(), toTimestamp(now()), ?, ?, ?, ?) USING TTL 300
 	`
+
 	err := r.session.Query(q,
 		entry.Email,
 		entry.Title,
@@ -40,8 +41,22 @@ func (r *repository) Delete() error {
 	return nil
 }
 
-func (r *repository) GetByMagicNumber(magicNumber *string) ([]*domainmodel.Model, error) {
-	return nil, nil
+func (r *repository) GetByMagicNumber(magicNumber *int) (*[]domainmodel.Model, error) {
+	var (
+		model  domainmodel.Model
+		models []domainmodel.Model
+		q      = `SELECT id, email, title, content from em.messages WHERE magic_number = ? ALLOW FILTERING`
+	)
+
+	iter := r.session.Query(q, magicNumber).Iter()
+	for iter.Scan(&model.Id, &model.Email, &model.Title, &model.Content) {
+		models = append(models, model)
+	}
+	if err := iter.Close(); err != nil {
+		return nil, err
+	}
+
+	return &models, nil
 }
 
 func NewEntryRepository(dbConn *gocql.Session) domain.MessagesRepository {
