@@ -48,3 +48,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+
+cmd/emailmessages/__debug_bin
+
+.vscode/
