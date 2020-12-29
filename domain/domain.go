@@ -3,12 +3,14 @@ package domain
 import (
 	"email-messages/delivery/commands"
 	"email-messages/domain/domainmodel"
+
+	"github.com/gocql/gocql"
 )
 
 type MessagesRepository interface {
 	Create(entry *domainmodel.Model) error
 	GetByMagicNumber(magicNumber *int) (*[]domainmodel.Model, error)
-	Delete() error
+	Delete(id *gocql.UUID) error
 }
 
 type MessagesService interface {

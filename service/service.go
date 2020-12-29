@@ -38,7 +38,14 @@ func (ms *messagesService) SendMessages(cmd *commands.SendMessagesCmd) error {
 	}
 
 	for _, result := range *results {
-		result.SendEmail()
+		err := result.SendEmail()
+		if err != nil {
+			return err
+		}
+		err = ms.messagesRepo.Delete(&result.Id)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

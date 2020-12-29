@@ -6,7 +6,7 @@ POST {{host}}/api/message
 Content-Type: application/json
 
 {
-    "email":"kondzir@gmail.com",
+    "email":"jan.kowalski@example.com",
     "title":"Interview",
     "content":"simple text",
     "magic_number":101
