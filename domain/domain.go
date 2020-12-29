@@ -7,12 +7,12 @@ import (
 
 type MessagesRepository interface {
 	Create(entry *domainmodel.Model) error
-	GetByMagicNumber(magicNumber *string) ([]*domainmodel.Model, error)
+	GetByMagicNumber(magicNumber *int) (*[]domainmodel.Model, error)
 	Delete() error
 }
 
 type MessagesService interface {
 	AddMessage(addMessageCmd *commands.AddMessageCmd) error
 	SendMessages(sendMessagesCmd *commands.SendMessagesCmd) error
-	GetMessages(email *string) ([]*domainmodel.Model, error)
+	GetMessages(email *string) (*[]domainmodel.Model, error)
 }

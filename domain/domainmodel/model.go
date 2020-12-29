@@ -1,11 +1,14 @@
 package domainmodel
 
 import (
+	"crypto/tls"
+	"email-messages/config"
 	"email-messages/delivery/commands"
 	"errors"
 	"time"
 
 	"github.com/gocql/gocql"
+	"gopkg.in/gomail.v2"
 )
 
 type Model struct {
@@ -38,4 +41,21 @@ func NewDomainModel(cmd *commands.AddMessageCmd) (*Model, error) {
 		Content:     cmd.Content,
 		MagicNumber: cmd.MagicNumber,
 	}, nil
+}
+
+func (model *Model) SendEmail() error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", config.Cfg.EmailUsername)
+	m.SetHeader("To", model.Email)
+	m.SetHeader("Subject", model.Title)
+	m.SetBody("text/plain", model.Content)
+
+	d := gomail.NewDialer(config.Cfg.EmailHost, config.Cfg.EmailPort, config.Cfg.EmailUsername, config.Cfg.EmailPassword)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+		return err
+	}
+
+	return nil
 }
