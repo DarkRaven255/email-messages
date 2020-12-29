@@ -4,6 +4,7 @@ import (
 	"email-messages/delivery/commands"
 	"email-messages/domain"
 	"email-messages/domain/domainmodel"
+	"email-messages/utils"
 	"errors"
 )
 
@@ -52,7 +53,17 @@ func (ms *messagesService) SendMessages(cmd *commands.SendMessagesCmd) error {
 }
 
 func (ms *messagesService) GetMessages(email *string) (*[]domainmodel.Model, error) {
-	return nil, nil
+
+	if !utils.IsEmailValid(*email) {
+		return nil, errors.New("Given email is not valid")
+	}
+
+	results, err := ms.messagesRepo.GetByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
 
 func NewMessagesService(mr domain.MessagesRepository) domain.MessagesService {

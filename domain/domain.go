@@ -10,6 +10,7 @@ import (
 type MessagesRepository interface {
 	Create(entry *domainmodel.Model) error
 	GetByMagicNumber(magicNumber *int) (*[]domainmodel.Model, error)
+	GetByEmail(email *string) (*[]domainmodel.Model, error)
 	Delete(id *gocql.UUID) error
 }
 
