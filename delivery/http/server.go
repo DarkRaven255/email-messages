@@ -64,10 +64,6 @@ func (s *server) GetMessagesByEmail(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, ResponseMessage{Message: err.Error()})
 	}
 
-	if *resp == nil {
-		return c.JSON(http.StatusNotFound, ResponseMessage{Message: "Not found"})
-	}
-
 	return c.JSON(http.StatusOK, resp)
 }
 

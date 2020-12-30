@@ -4,6 +4,7 @@ import (
 	"email-messages/delivery/commands"
 	"email-messages/domain"
 	"email-messages/domain/domainmodel"
+	"errors"
 )
 
 type messagesService struct {
@@ -32,6 +33,10 @@ func (ms *messagesService) SendMessages(cmd *commands.SendMessagesCmd) error {
 		return err
 	}
 
+	if *results == nil {
+		return errors.New("Not found")
+	}
+
 	for _, result := range *results {
 		err := result.SendEmail()
 		if err != nil {
@@ -51,6 +56,10 @@ func (ms *messagesService) GetMessages(email *string) (*[]domainmodel.Model, err
 	results, err := ms.messagesRepo.GetByEmail(email)
 	if err != nil {
 		return nil, err
+	}
+
+	if *results == nil {
+		return nil, errors.New("Not found")
 	}
 
 	return results, nil
