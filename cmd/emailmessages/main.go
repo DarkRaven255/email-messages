@@ -17,14 +17,20 @@ import (
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
 
+	"github.com/go-playground/validator"
 	"github.com/gocql/gocql"
 )
 
 var cassandraSession *gocql.Session
 
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
 func main() {
 
 	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"*"},
@@ -75,4 +81,8 @@ func initCassandra() *gocql.Session {
 	}
 
 	return session
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
 }

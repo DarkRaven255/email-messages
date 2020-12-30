@@ -39,6 +39,10 @@ func (s *server) AddMessage(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, ResponseMessage{Message: err.Error()})
 	}
 
+	if err = c.Validate(cmd); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
 	err = s.MessagesService.AddMessage(&cmd)
 
 	if err != nil {
@@ -53,10 +57,6 @@ func (s *server) GetMessagesByEmail(c echo.Context) error {
 		err   error
 		email = c.Param("email")
 	)
-
-	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseMessage{Message: err.Error()})
-	}
 
 	resp, err := s.MessagesService.GetMessages(&email)
 
@@ -76,6 +76,10 @@ func (s *server) SendMessages(c echo.Context) error {
 	err = c.Bind(&cmd)
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, ResponseMessage{Message: err.Error()})
+	}
+
+	if err = c.Validate(cmd); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	err = s.MessagesService.SendMessages(&cmd)
