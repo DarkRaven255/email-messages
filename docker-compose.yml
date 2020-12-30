@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  cassandra:
+    image: "cassandra:latest"
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+    volumes:
+      - "cassandra_data:/cassandra"
+    environment:
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+  cassandra-load-settings:
+    container_name: cassandra-load-settings
+    image: cassandra:latest
+    depends_on:
+      - cassandra
+    volumes:
+      - ./cassandra.cql:/cassandra.cql
+    command: /bin/bash -c "sleep 60 && echo loading cassandra settings && cqlsh cassandra -f /cassandra.cql"
+  emailmessages:
+    build: .
+    image: emailmessages
+    ports:
+      - "8080:8080"
+    links:
+      - "cassandra"
+    environment:
+      - PORT=8080
+      - DB_CLUSTER1=cassandra
+      - DB_USERNAME=cassandra
+      - DB_PASSWORD=cassandra
+      - DB_KEYSPACE=em
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_PORT=587
+      - EMAIL_LOGIN=kdulembabitbucket@gmail.com
+      - EMAIL_PASSWORD=Mas3lko#12
+    restart: "on-failure"
+    depends_on:
+      - "cassandra"
+      - "cassandra-load-settings"
+volumes:
+  cassandra_data:
+    driver: local
