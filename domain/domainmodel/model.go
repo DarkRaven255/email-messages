@@ -12,12 +12,12 @@ import (
 )
 
 type Model struct {
-	Id          gocql.UUID `cql:"id"`
-	Timestamp   time.Time  `cql:"timestamp"`
-	Email       string     `cql:"email"`
-	Title       string     `cql:"title"`
-	Content     string     `cql:"content"`
-	MagicNumber int        `cql:"magic_number"`
+	Id          gocql.UUID `json:"id" cql:"id"`
+	Timestamp   time.Time  `json:"timestamp" cql:"timestamp"`
+	Email       string     `json:"email" cql:"email"`
+	Title       string     `json:"title" cql:"title"`
+	Content     string     `json:"content" cql:"content"`
+	MagicNumber int        `json:"magic_number" cql:"magic_number"`
 }
 
 func NewDomainModel(cmd *commands.AddMessageCmd) (*Model, error) {
