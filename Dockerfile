@@ -22,4 +22,14 @@ FROM alpine
 COPY --from=builder /app/bin/app /bin/
 WORKDIR /app
 
+ENV PORT=8080
+ENV DB_CLUSTER1=192.168.0.14
+ENV DB_USERNAME=cassandra
+ENV DB_PASSWORD=cassandra
+ENV DB_KEYSPACE=em
+ENV EMAIL_HOST=smtp.gmail.com
+ENV EMAIL_PORT=587
+ENV EMAIL_LOGIN=kdulembabitbucket@gmail.com
+ENV EMAIL_PASSWORD=Mas3lko#12
+
 CMD ["app"]
