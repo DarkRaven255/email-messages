@@ -1,29 +1,23 @@
-# README #
+# email-messages #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Endpoints:
 
-### What is this repository for? ###
+* POST /api/message
+* POST /api/send
+* GET /api/messages/{emailValue}
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+Example requests provided in request.http file.
 
-### How do I get set up? ###
+Required ENV's:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+    PORT=8080
+    DB_CLUSTER1=YourClusterAddress
+    DB_USERNAME=cassandra
+    DB_PASSWORD=cassandra
+    DB_KEYSPACE=em
+    EMAIL_HOST=smtp.gmail.com
+    EMAIL_PORT=587
+    EMAIL_LOGIN=YourEmailLogin
+    EMAIL_PASSWORD=YourEmailPassword
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Author: Klaudia Dulemba
