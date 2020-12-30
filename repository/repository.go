@@ -61,7 +61,7 @@ func (r *repository) GetByEmail(email *string) (*[]domainmodel.Model, error) {
 		q      = `SELECT id, timestamp, email, title, content, magic_number from em.messages WHERE email = ? ALLOW FILTERING`
 	)
 
-	iter := r.session.Query(q, email).Iter()
+	iter := r.session.Query(q, email).PageSize(10).Iter()
 	for iter.Scan(&model.Id, &model.Timestamp, &model.Email, &model.Title, &model.Content, &model.MagicNumber) {
 		models = append(models, model)
 	}
