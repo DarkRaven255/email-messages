@@ -4,8 +4,6 @@ import (
 	"email-messages/delivery/commands"
 	"email-messages/domain"
 	"email-messages/domain/domainmodel"
-	"email-messages/utils"
-	"errors"
 )
 
 type messagesService struct {
@@ -29,10 +27,6 @@ func (ms *messagesService) AddMessage(cmd *commands.AddMessageCmd) error {
 
 func (ms *messagesService) SendMessages(cmd *commands.SendMessagesCmd) error {
 
-	if &cmd.MagicNumber == nil {
-		return errors.New("MagicNumber can not be empty!")
-	}
-
 	results, err := ms.messagesRepo.GetByMagicNumber(&cmd.MagicNumber)
 	if err != nil {
 		return err
@@ -53,10 +47,6 @@ func (ms *messagesService) SendMessages(cmd *commands.SendMessagesCmd) error {
 }
 
 func (ms *messagesService) GetMessages(email *string) (*[]domainmodel.Model, error) {
-
-	if !utils.IsEmailValid(*email) {
-		return nil, errors.New("Given email is not valid")
-	}
 
 	results, err := ms.messagesRepo.GetByEmail(email)
 	if err != nil {

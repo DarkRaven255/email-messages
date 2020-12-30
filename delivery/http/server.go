@@ -3,19 +3,15 @@ package http
 import (
 	"email-messages/app"
 	"email-messages/delivery/commands"
-	"email-messages/domain"
+	"email-messages/utils"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 )
 
 type ResponseMessage struct {
 	Message string `json:"message"`
-}
-
-type ResponsePercentResult struct {
-	PercentResult float32 `json:"percentResult"`
 }
 
 type server struct {
@@ -46,7 +42,7 @@ func (s *server) AddMessage(c echo.Context) error {
 	err = s.MessagesService.AddMessage(&cmd)
 
 	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseMessage{Message: err.Error()})
+		return c.JSON(http.StatusInternalServerError, ResponseMessage{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, ResponseMessage{Message: "ok"})
@@ -58,10 +54,18 @@ func (s *server) GetMessagesByEmail(c echo.Context) error {
 		email = c.Param("email")
 	)
 
+	if !utils.IsEmailValid(email) {
+		c.JSON(http.StatusBadRequest, errors.New("Given email is not valid"))
+	}
+
 	resp, err := s.MessagesService.GetMessages(&email)
 
 	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseMessage{Message: err.Error()})
+		return c.JSON(http.StatusInternalServerError, ResponseMessage{Message: err.Error()})
+	}
+
+	if *resp == nil {
+		return c.JSON(http.StatusNotFound, ResponseMessage{Message: "Not found"})
 	}
 
 	return c.JSON(http.StatusOK, resp)
@@ -85,22 +89,8 @@ func (s *server) SendMessages(c echo.Context) error {
 	err = s.MessagesService.SendMessages(&cmd)
 
 	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseMessage{Message: err.Error()})
+		return c.JSON(http.StatusInternalServerError, ResponseMessage{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, ResponseMessage{Message: "ok"})
-}
-
-func getStatusCode(err error) int {
-	if err == nil {
-		return http.StatusOK
-	}
-
-	log.Error(err)
-	switch err {
-	case domain.ErrNotFound:
-		return http.StatusNotFound
-	default:
-		return http.StatusInternalServerError
-	}
 }
